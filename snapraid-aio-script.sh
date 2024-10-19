@@ -351,8 +351,8 @@ fi
   # all jobs done
   # check snapraid output and build the message output
   # if notification services are enabled, messages will be sent now
-  prepare_output
   ELAPSED="$((SECONDS / 3600))hrs $(((SECONDS / 60) % 60))min $((SECONDS % 60))sec"
+  prepare_output
   echo "----------------------------------------"
   echo "## Total time elapsed for SnapRAID: $ELAPSED"
   mklog "INFO: Total time elapsed for SnapRAID: $ELAPSED"
@@ -765,7 +765,8 @@ This is a severe warning, check your logs immediately."
     NOTIFY_OUTPUT="$SUBJECT
 	
 This is a severe warning, check your logs immediately.
-SUMMARY: Equal [$EQ_COUNT] - Added [$ADD_COUNT] - Deleted [$DEL_COUNT] - Moved [$MOVE_COUNT] - Copied [$COPY_COUNT] - Updated [$UPDATE_COUNT]"
+SUMMARY: Equal [$EQ_COUNT] - Added [$ADD_COUNT] - Deleted [$DEL_COUNT] - Moved [$MOVE_COUNT] - Copied [$COPY_COUNT] - Updated [$UPDATE_COUNT]
+Total execution time: $ELAPSED"
     notify_warning
 	
 # minor warnings, less critical
@@ -816,7 +817,8 @@ SUMMARY: Equal [$EQ_COUNT] - Added [$ADD_COUNT] - Deleted [$DEL_COUNT] - Moved [
   else
     SUBJECT="[COMPLETED] $JOBS_DONE Jobs $EMAIL_SUBJECT_PREFIX"
     NOTIFY_OUTPUT="$SUBJECT
-SUMMARY: Equal [$EQ_COUNT] - Added [$ADD_COUNT] - Deleted [$DEL_COUNT] - Moved [$MOVE_COUNT] - Copied [$COPY_COUNT] - Updated [$UPDATE_COUNT]"
+SUMMARY: Equal [$EQ_COUNT] - Added [$ADD_COUNT] - Deleted [$DEL_COUNT] - Moved [$MOVE_COUNT] - Copied [$COPY_COUNT] - Updated [$UPDATE_COUNT]
+Total execution time: $ELAPSED"
     notify_success
   fi
 }
@@ -919,7 +921,7 @@ function send_mail(){
 
   if [ -x "$HOOK_NOTIFICATION" ]; then
     echo -e "Notification user script is set. Calling it now [$(date)]"
-    $HOOK_NOTIFICATION "$SUBJECT" "$body"
+    $HOOK_NOTIFICATION "$SUBJECT" "$NOTIFY_OUTPUT" "$body"
   elif [ "$EMAIL_ADDRESS" ]; then
     echo -e "Email address is set. Sending email report to **$EMAIL_ADDRESS** [$(date)]"
     $MAIL_BIN -a 'Content-Type: text/html' -s "$SUBJECT" -r "$FROM_EMAIL_ADDRESS" "$EMAIL_ADDRESS" \
